@@ -1,6 +1,7 @@
+import VideoOptionsModal from '#/components/VideoOptionsModal';
 import {Screens} from '#/navigator/type';
 import {colors} from '#/themes/colors';
-import React from 'react';
+import React, {useState} from 'react';
 import {
   View,
   Text,
@@ -53,6 +54,25 @@ const VideoGalleryScreen: React.FC<VideoGalleryScreenProps> = ({
       duration: '01:14',
     },
   ];
+
+  const [modalVisible, setModalVisible] = useState<boolean>(false);
+  const [selectedVideo, setSelectedVideo] = useState<VideoItem | null>(null);
+  const handleOpenOptions = (video: VideoItem) => {
+    setSelectedVideo(video);
+    setModalVisible(true);
+  };
+
+  const handleRenameVideo = (video: VideoItem) => {
+    console.log(`Renaming video: ${video.title}`);
+  };
+
+  const handleToggleFavorite = (video: VideoItem) => {
+    console.log(`Toggle favorite for video: ${video.title}`);
+  };
+
+  const handleDeleteVideo = (video: VideoItem) => {
+    console.log(`Deleting video: ${video.title}`);
+  };
 
   const myVideos: VideoItem[] = [
     {
@@ -182,6 +202,15 @@ const VideoGalleryScreen: React.FC<VideoGalleryScreenProps> = ({
 
   return (
     <SafeAreaView style={styles.container}>
+      <VideoOptionsModal
+        visible={true}
+        onClose={() => setModalVisible(false)}
+        video={selectedVideo}
+        onPlayVideo={handlePlayVideo}
+        onRenameVideo={handleRenameVideo}
+        onToggleFavorite={handleToggleFavorite}
+        onDeleteVideo={handleDeleteVideo}
+      />
       <StatusBar barStyle="light-content" />
 
       <ScrollView showsVerticalScrollIndicator={false}>
@@ -225,7 +254,6 @@ const itemWidth = (width - 50) / 2;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#121212',
   },
   header: {
     paddingHorizontal: 20,

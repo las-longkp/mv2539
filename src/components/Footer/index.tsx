@@ -16,51 +16,36 @@ const Footer: React.FC<BottomTabBarProps> = ({navigation, state}) => {
     navigateScreen(buttonName);
   };
 
-  const Button = ({
-    name,
-    icon,
-    label,
-  }: {
-    name: string;
-    icon: string;
-    label: string;
-  }) => (
+  const Button = ({name, icon}: {name: string; icon: string}) => (
     <TouchableOpacity
       style={[styles.button, selected === name && styles.selectedButton]}
       onPress={() => handlePress(name)}>
       <Icon
         source={icon}
         size={24}
-        color={selected === name ? colors.Primary : colors.Gray}
+        color={selected === name ? colors.Accent : colors.Gray}
       />
-      <Text
-        style={[
-          styles.textButton,
-          selected === name && styles.selectedTextButton,
-        ]}>
-        {label}
-      </Text>
     </TouchableOpacity>
   );
 
   return (
     <View style={styles.groupButton}>
-      <Button name={Screens.HomeScreen} icon="home" label="Home" />
-      <Button
-        name={Screens.FavoriteScreen}
-        icon="bell-outline"
-        label="Reminder"
-      />
-      <Button
-        name={Screens.SaveVideoScreen}
-        icon="chart-bar"
-        label="Statistical"
-      />
-      <Button
-        name={Screens.SettingScreen}
-        icon="cog-outline"
-        label="Settings"
-      />
+      <View
+        style={{
+          backgroundColor: colors.Bg2,
+          borderRadius: 25,
+          flexDirection: 'row',
+          width: '85%',
+          justifyContent: 'space-around',
+        }}>
+        <Button name={Screens.HomeScreen} icon="home" />
+        <Button name={Screens.FavoriteScreen} icon="heart-outline" />
+        <Button name={Screens.SaveVideoScreen} icon="arrow-collapse-down" />
+        <Button name={Screens.SettingScreen} icon="cog-outline" />
+      </View>
+      <TouchableOpacity style={styles.buttonPlus}>
+        <Icon size={24} source="plus" color={colors.Accent} />
+      </TouchableOpacity>
     </View>
   );
 };
@@ -69,19 +54,23 @@ export default Footer;
 
 const styles = StyleSheet.create({
   groupButton: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
     justifyContent: 'space-between',
     width: '100%',
     flexDirection: 'row',
     padding: 16,
-    backgroundColor: '#fff',
+    backgroundColor: colors.Bg,
     shadowColor: '#000',
     shadowOffset: {width: 0, height: 3},
     shadowOpacity: 0.1,
     shadowRadius: 4,
+  },
+  buttonPlus: {
+    backgroundColor: colors.Bg2,
+    borderRadius: 100,
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: 50,
+    height: 50,
   },
   button: {
     justifyContent: 'center',

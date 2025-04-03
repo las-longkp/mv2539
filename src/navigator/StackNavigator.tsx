@@ -1,4 +1,3 @@
-import Footer from '#/Footer';
 import FavoriteScreen from '#/pages/FavoriteScreen/FavoriteScreen';
 import HomeScreen from '#/pages/HomeScreen/HomeScreen';
 import SaveVideoScreen from '#/pages/SaveVideoScreen/SaveVideoScreen';
@@ -8,6 +7,7 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import React from 'react';
 import {RootStackParamsList, Screens} from './type';
 import PlayVideoScreen from '#/pages/PlayVideoScreen';
+import Footer from '#/components/Footer';
 
 const Stack = createNativeStackNavigator<RootStackParamsList>();
 const Tab = createBottomTabNavigator<RootStackParamsList>();

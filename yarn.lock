@@ -7400,6 +7400,7 @@ __metadata:
     react: "npm:18.3.1"
     react-native: "npm:0.76.7"
     react-native-gesture-handler: "npm:^2.25.0"
+    react-native-in-app-review: "npm:^4.3.5"
     react-native-paper: "npm:^5.13.1"
     react-native-reanimated: "npm:^3.17.2"
     react-native-safe-area-context: "npm:^5.3.0"
@@ -8164,6 +8165,13 @@ __metadata:
     react: "*"
     react-native: "*"
   checksum: 10c0/95eccc67fb07418ef76b84bcee4b29c16865e78afa367ec82d94b08554cfa7337158ab23937b785bd9a732e62c9c815b294a93d1b2c2cbdc7a8a1e7029f2ba35
+  languageName: node
+  linkType: hard
+
+"react-native-in-app-review@npm:^4.3.5":
+  version: 4.3.5
+  resolution: "react-native-in-app-review@npm:4.3.5"
+  checksum: 10c0/7adbfd91f6ad7a84f2148728c5387bf8d80f0bf4cb5229bf4d8ea728051c90bda297ecc1c8564921622667bf9cdc1c288b4e57ab30c090d6397f01d55d349247
   languageName: node
   linkType: hard
 
