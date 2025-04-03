@@ -1,7 +1,7 @@
 import VideoOptionsModal from '#/components/VideoOptionsModal';
 import {Screens} from '#/navigator/type';
 import {colors} from '#/themes/colors';
-import React, {useState} from 'react';
+import React, {useRef, useState} from 'react';
 import {
   View,
   Text,
@@ -12,6 +12,7 @@ import {
   TouchableOpacity,
   StatusBar,
   Dimensions,
+  Animated,
 } from 'react-native';
 import {IconButton} from 'react-native-paper';
 
@@ -57,11 +58,7 @@ const VideoGalleryScreen: React.FC<VideoGalleryScreenProps> = ({
 
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [selectedVideo, setSelectedVideo] = useState<VideoItem | null>(null);
-  const handleOpenOptions = (video: VideoItem) => {
-    setSelectedVideo(video);
-    setModalVisible(true);
-  };
-
+  const translateY = useRef(new Animated.Value(300)).current;
   const handleRenameVideo = (video: VideoItem) => {
     console.log(`Renaming video: ${video.title}`);
   };
@@ -137,6 +134,8 @@ const VideoGalleryScreen: React.FC<VideoGalleryScreenProps> = ({
   };
 
   const handleVideoOptions = (video: VideoItem) => {
+    setSelectedVideo(video);
+    setModalVisible(true);
     console.log(`Options for video: ${video.title}`);
   };
 
@@ -202,15 +201,6 @@ const VideoGalleryScreen: React.FC<VideoGalleryScreenProps> = ({
 
   return (
     <SafeAreaView style={styles.container}>
-      <VideoOptionsModal
-        visible={true}
-        onClose={() => setModalVisible(false)}
-        video={selectedVideo}
-        onPlayVideo={handlePlayVideo}
-        onRenameVideo={handleRenameVideo}
-        onToggleFavorite={handleToggleFavorite}
-        onDeleteVideo={handleDeleteVideo}
-      />
       <StatusBar barStyle="light-content" />
 
       <ScrollView showsVerticalScrollIndicator={false}>
@@ -244,6 +234,14 @@ const VideoGalleryScreen: React.FC<VideoGalleryScreenProps> = ({
 
         <View style={styles.bottomPadding} />
       </ScrollView>
+      <VideoOptionsModal
+        visible={modalVisible}
+        onClose={() => setModalVisible(false)}
+        video={selectedVideo}
+        onPlayVideo={handlePlayVideo}
+        onToggleFavorite={handleToggleFavorite}
+        onDeleteVideo={handleDeleteVideo}
+      />
     </SafeAreaView>
   );
 };

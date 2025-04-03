@@ -1,17 +1,16 @@
-import React, {useRef, useEffect, useState} from 'react';
+import {colors} from '#/themes/colors';
+import React, {useState} from 'react';
 import {
-  View,
-  Text,
-  StyleSheet,
-  Modal,
-  TouchableOpacity,
-  TouchableWithoutFeedback,
-  Animated,
-  Dimensions,
-  Share,
   Alert,
-  ScrollView,
+  Dimensions,
+  Modal,
+  Share,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from 'react-native';
+import RenameModal from './RenameModal';
 
 interface VideoItem {
   id: string;
@@ -28,7 +27,6 @@ interface VideoOptionsModalProps {
   onClose: () => void;
   video: VideoItem | null;
   onPlayVideo?: (video: VideoItem) => void;
-  onRenameVideo?: (video: VideoItem) => void;
   onToggleFavorite?: (video: VideoItem) => void;
   onDeleteVideo?: (video: VideoItem) => void;
 }
@@ -38,25 +36,10 @@ const VideoOptionsModal: React.FC<VideoOptionsModalProps> = ({
   onClose,
   video,
   onPlayVideo,
-  onRenameVideo,
   onToggleFavorite,
   onDeleteVideo,
 }) => {
-  const slideAnim = useRef(new Animated.Value(0)).current;
-
-  useEffect(() => {
-    Animated.timing(slideAnim, {
-      toValue: visible ? 1 : 0,
-      duration: 300,
-      useNativeDriver: true,
-    }).start();
-  }, [slideAnim, visible]);
-
-  const translateY = slideAnim.interpolate({
-    inputRange: [0, 1],
-    outputRange: [300, 0],
-  });
-
+  const [renameModalVisible, setRenameModalVisible] = useState<boolean>(false);
   const handleDeleteVideo = () => {
     if (video && onDeleteVideo) {
       Alert.alert(
@@ -95,45 +78,44 @@ const VideoOptionsModal: React.FC<VideoOptionsModalProps> = ({
       visible={visible}
       animationType="none"
       onRequestClose={onClose}>
-      <TouchableWithoutFeedback onPress={onClose}>
-        <View style={styles.modalOverlay}>
-          <Animated.View
-            style={[styles.modalContainer, {transform: [{translateY}]}]}>
-            <View style={styles.modalHandle} />
-            <ScrollView>
-              <TouchableOpacity
-                style={styles.optionItem}
-                onPress={() => onPlayVideo?.(video)}>
-                <Text style={styles.optionText}>Play Video</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.optionItem}
-                onPress={() => onRenameVideo?.(video)}>
-                <Text style={styles.optionText}>Rename</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.optionItem}
-                onPress={() => onToggleFavorite?.(video)}>
-                <Text style={styles.optionText}>
-                  {video.isFavorite
-                    ? 'Remove from Favourite'
-                    : 'Add to Favourite'}
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.optionItem}
-                onPress={handleShareVideo}>
-                <Text style={styles.optionText}>Share Video</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[styles.optionItem, styles.deleteOption]}
-                onPress={handleDeleteVideo}>
-                <Text style={styles.optionText}>Delete Video</Text>
-              </TouchableOpacity>
-            </ScrollView>
-          </Animated.View>
-        </View>
-      </TouchableWithoutFeedback>
+      <TouchableOpacity
+        style={styles.overlay}
+        onPress={onClose}
+        activeOpacity={1}
+      />
+      <View style={styles.sheet}>
+        <TouchableOpacity
+          style={styles.optionItem}
+          onPress={() => onPlayVideo?.(video)}>
+          <Text style={styles.optionText}>Play Video</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.optionItem}
+          onPress={() => setRenameModalVisible(true)}>
+          <Text style={styles.optionText}>Rename</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.optionItem}
+          onPress={() => onToggleFavorite?.(video)}>
+          <Text style={styles.optionText}>
+            {video.isFavorite ? 'Remove from Favourite' : 'Add to Favourite'}
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.optionItem} onPress={handleShareVideo}>
+          <Text style={styles.optionText}>Share Video</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.optionItem, styles.deleteOption]}
+          onPress={handleDeleteVideo}>
+          <Text style={styles.optionText}>Delete Video</Text>
+        </TouchableOpacity>
+      </View>
+      <RenameModal
+        visible={renameModalVisible}
+        onClose={() => setRenameModalVisible(false)}
+        onRename={() => {}}
+        initialName={video.title}
+      />
     </Modal>
   );
 };
@@ -141,20 +123,25 @@ const VideoOptionsModal: React.FC<VideoOptionsModalProps> = ({
 const {width} = Dimensions.get('window');
 
 const styles = StyleSheet.create({
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: 'red',
-    justifyContent: 'flex-end',
+  overlay: {
+    position: 'absolute',
     top: 0,
-    bottom: 0,
-    right: 0,
     left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
-  modalContainer: {
-    backgroundColor: '#2D2D3F',
+  sheet: {
+    backgroundColor: colors.Bg2,
+    paddingHorizontal: 16,
+    paddingVertical: 32,
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: 0,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
-    paddingBottom: 30,
+    elevation: 5,
   },
   modalHandle: {
     width: 40,

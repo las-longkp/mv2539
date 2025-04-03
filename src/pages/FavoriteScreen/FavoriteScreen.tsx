@@ -176,7 +176,6 @@ const FavoritesScreen: React.FC<FavoritesScreenProps> = ({navigation}) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#121212',
   },
   header: {
     paddingHorizontal: 20,

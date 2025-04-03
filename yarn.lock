@@ -7407,7 +7407,7 @@ __metadata:
     react-native-screens: "npm:^4.10.0"
     react-native-uuid: "npm:^2.0.3"
     react-native-vector-icons: "npm:^10.2.0"
-    react-native-video: "npm:6.0.0-beta.8"
+    react-native-video: "npm:6.0.0-beta.5"
     react-test-renderer: "npm:18.3.1"
     swr: "npm:^2.3.3"
     typescript: "npm:5.0.4"
@@ -8270,13 +8270,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-video@npm:6.0.0-beta.8":
-  version: 6.0.0-beta.8
-  resolution: "react-native-video@npm:6.0.0-beta.8"
+"react-native-video@npm:6.0.0-beta.5":
+  version: 6.0.0-beta.5
+  resolution: "react-native-video@npm:6.0.0-beta.5"
   peerDependencies:
     react: "*"
     react-native: "*"
-  checksum: 10c0/108ab2a536ef9b2892f249ca0f9fb4f3e4d29430c8553b48fc11cb29f56fc7b2565ce7de31b1f00b1bf27cad0a6e8299f3f8adb8e398a172ef847ba433ea9bb0
+  checksum: 10c0/c1ad0f486d42e947fae5d877afe8152c0cecf7f0fa6c4e89f6f051db47d49ff5cd0c52f4ba8df51d516c3288582b8206425fc4654312dfa32f3f40f098345431
   languageName: node
   linkType: hard
 
