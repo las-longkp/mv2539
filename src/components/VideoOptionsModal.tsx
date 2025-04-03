@@ -11,16 +11,7 @@ import {
   View,
 } from 'react-native';
 import RenameModal from './RenameModal';
-
-interface VideoItem {
-  id: string;
-  title: string;
-  thumbnail: string;
-  duration: string;
-  date?: string;
-  size?: string;
-  isFavorite?: boolean;
-}
+import {VideoItem} from '#/navigator/type';
 
 interface VideoOptionsModalProps {
   visible: boolean;

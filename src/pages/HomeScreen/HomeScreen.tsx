@@ -1,6 +1,7 @@
 import VideoOptionsModal from '#/components/VideoOptionsModal';
-import {Screens} from '#/navigator/type';
+import {Screens, VideoItem} from '#/navigator/type';
 import {colors} from '#/themes/colors';
+import {useVideoItemList} from '#/useLocalStorageSWR';
 import React, {useRef, useState} from 'react';
 import {
   View,
@@ -15,15 +16,6 @@ import {
   Animated,
 } from 'react-native';
 import {IconButton} from 'react-native-paper';
-
-interface VideoItem {
-  id: string;
-  title: string;
-  thumbnail: string;
-  duration: string;
-  date?: string;
-  size?: string;
-}
 
 interface VideoGalleryScreenProps {
   navigation?: any;
@@ -71,62 +63,7 @@ const VideoGalleryScreen: React.FC<VideoGalleryScreenProps> = ({
     console.log(`Deleting video: ${video.title}`);
   };
 
-  const myVideos: VideoItem[] = [
-    {
-      id: '1',
-      title: 'Love Letter',
-      thumbnail:
-        'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Home-6fTJIvGHXykyj1cSX4jKuCfIn2Oedz.png',
-      duration: '03:21',
-      date: '26/03/2025',
-      size: '126MB',
-    },
-    {
-      id: '2',
-      title: 'Rose Youth',
-      thumbnail:
-        'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Home-6fTJIvGHXykyj1cSX4jKuCfIn2Oedz.png',
-      duration: '04:13',
-      date: '26/03/2025',
-      size: '213MB',
-    },
-    {
-      id: '3',
-      title: 'Whales and Sun...',
-      thumbnail:
-        'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Home-6fTJIvGHXykyj1cSX4jKuCfIn2Oedz.png',
-      duration: '01:32',
-      date: '24/03/2025',
-      size: '78MB',
-    },
-    {
-      id: '4',
-      title: 'Curious kid',
-      thumbnail:
-        'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Home-6fTJIvGHXykyj1cSX4jKuCfIn2Oedz.png',
-      duration: '02:47',
-      date: '22/03/2025',
-      size: '103MB',
-    },
-    {
-      id: '5',
-      title: 'The scared cat',
-      thumbnail:
-        'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Home-6fTJIvGHXykyj1cSX4jKuCfIn2Oedz.png',
-      duration: '00:58',
-      date: '22/03/2025',
-      size: '36MB',
-    },
-    {
-      id: '6',
-      title: 'Go home',
-      thumbnail:
-        'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Home-6fTJIvGHXykyj1cSX4jKuCfIn2Oedz.png',
-      duration: '05:12',
-      date: '18/03/2025',
-      size: '212MB',
-    },
-  ];
+  const {data, saveData} = useVideoItemList();
 
   const handlePlayVideo = (video: VideoItem) => {
     console.log(`Playing video: ${video.title}`);
@@ -228,7 +165,9 @@ const VideoGalleryScreen: React.FC<VideoGalleryScreenProps> = ({
             <Text style={styles.sectionTitle}>My videos</Text>
           </View>
           <View style={styles.myVideosGrid}>
-            {myVideos.map((video, index) => renderMyVideoItem(video, index))}
+            {(data || []).map((video, index) =>
+              renderMyVideoItem(video, index),
+            )}
           </View>
         </View>
 

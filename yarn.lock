@@ -7399,7 +7399,9 @@ __metadata:
     prettier: "npm:2.8.8"
     react: "npm:18.3.1"
     react-native: "npm:0.76.7"
+    react-native-create-thumbnail: "npm:^2.1.1"
     react-native-gesture-handler: "npm:^2.25.0"
+    react-native-image-picker: "npm:^8.2.0"
     react-native-in-app-review: "npm:^4.3.5"
     react-native-paper: "npm:^5.13.1"
     react-native-reanimated: "npm:^3.17.2"
@@ -8154,6 +8156,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-native-create-thumbnail@npm:^2.1.1":
+  version: 2.1.1
+  resolution: "react-native-create-thumbnail@npm:2.1.1"
+  peerDependencies:
+    react-native: ">=0.59.0"
+  checksum: 10c0/01a67662f3c064683c5f96ab4b72995d2fe526c62e61b83d726f80b2d9027767d0460a05536e9dcf53ba031c4b1bc388395db8f74f490161fee9e7db10389b55
+  languageName: node
+  linkType: hard
+
 "react-native-gesture-handler@npm:^2.25.0":
   version: 2.25.0
   resolution: "react-native-gesture-handler@npm:2.25.0"
@@ -8165,6 +8176,16 @@ __metadata:
     react: "*"
     react-native: "*"
   checksum: 10c0/95eccc67fb07418ef76b84bcee4b29c16865e78afa367ec82d94b08554cfa7337158ab23937b785bd9a732e62c9c815b294a93d1b2c2cbdc7a8a1e7029f2ba35
+  languageName: node
+  linkType: hard
+
+"react-native-image-picker@npm:^8.2.0":
+  version: 8.2.0
+  resolution: "react-native-image-picker@npm:8.2.0"
+  peerDependencies:
+    react: "*"
+    react-native: "*"
+  checksum: 10c0/2e475e930e41de3071899bf2fa2548c1b657b6f5a978843219fe1e0dc1b9678ceb58b5c3410c56c5ca85bd927b1de96ddc958b31f065418b200fc651e039bdf0
   languageName: node
   linkType: hard
 

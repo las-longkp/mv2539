@@ -15,3 +15,12 @@ export type RootStackParamsList = {
   SettingScreen: undefined;
   PlayVideoScreen: {id: string};
 };
+export type VideoItem = {
+  id: string;
+  title: string;
+  thumbnail: string;
+  duration: number;
+  date: string;
+  size: number;
+  isFavorite?: boolean;
+};
