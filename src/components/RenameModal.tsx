@@ -26,13 +26,10 @@ const RenameModal: React.FC<RenameModalProps> = ({
   onRename,
   initialName,
 }) => {
-  // State for the new name
   const [newName, setNewName] = useState<string>(initialName);
 
-  // Animation value for modal
   const fadeAnim = React.useRef(new Animated.Value(0)).current;
 
-  // Reset name when modal opens
   useEffect(() => {
     if (visible) {
       setNewName(initialName);
@@ -50,12 +47,10 @@ const RenameModal: React.FC<RenameModalProps> = ({
     }
   }, [visible, initialName, fadeAnim]);
 
-  // Handle back button press
   const handleBack = () => {
     onClose();
   };
 
-  // Handle done button press
   const handleDone = () => {
     if (newName.trim()) {
       onRename(newName.trim());

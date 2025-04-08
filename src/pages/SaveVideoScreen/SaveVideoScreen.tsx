@@ -108,40 +108,6 @@ const SaveVideoScreen: React.FC<SaveVideoScreenProps> = ({navigation}) => {
     </View>
   );
 
-  const renderMiniPlayer = () => {
-    if (!showMiniPlayer || !currentlyPlaying) return null;
-
-    return (
-      <View style={styles.miniPlayerContainer}>
-        <TouchableOpacity
-          style={styles.miniPlayerContent}
-          onPress={handleExpandMiniPlayer}>
-          <Image
-            source={{uri: currentlyPlaying.thumbnail}}
-            style={styles.miniPlayerThumbnail}
-            resizeMode="cover"
-          />
-
-          <IconButton
-            icon="fullscreen"
-            iconColor="#FFFFFF"
-            size={20}
-            style={styles.expandButton}
-            onPress={handleExpandMiniPlayer}
-          />
-
-          <IconButton
-            icon="close"
-            iconColor="#FFFFFF"
-            size={20}
-            style={styles.closeButton}
-            onPress={handleCloseMiniPlayer}
-          />
-        </TouchableOpacity>
-      </View>
-    );
-  };
-
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="light-content" />
@@ -156,8 +122,6 @@ const SaveVideoScreen: React.FC<SaveVideoScreenProps> = ({navigation}) => {
         {savedVideos.map(renderVideoItem)}
         <View style={styles.bottomPadding} />
       </ScrollView>
-
-      {renderMiniPlayer()}
     </SafeAreaView>
   );
 };

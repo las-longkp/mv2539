@@ -20,6 +20,7 @@ interface VideoOptionsModalProps {
   onPlayVideo?: (video: VideoItem) => void;
   onToggleFavorite?: (video: VideoItem) => void;
   onDeleteVideo?: (video: VideoItem) => void;
+  onRename: (video: VideoItem, name: string) => void;
 }
 
 const VideoOptionsModal: React.FC<VideoOptionsModalProps> = ({
@@ -29,6 +30,7 @@ const VideoOptionsModal: React.FC<VideoOptionsModalProps> = ({
   onPlayVideo,
   onToggleFavorite,
   onDeleteVideo,
+  onRename,
 }) => {
   const [renameModalVisible, setRenameModalVisible] = useState<boolean>(false);
   const handleDeleteVideo = () => {
@@ -74,12 +76,18 @@ const VideoOptionsModal: React.FC<VideoOptionsModalProps> = ({
         onPress={onClose}
         activeOpacity={1}
       />
+
       <View style={styles.sheet}>
-        <TouchableOpacity
-          style={styles.optionItem}
-          onPress={() => onPlayVideo?.(video)}>
-          <Text style={styles.optionText}>Play Video</Text>
-        </TouchableOpacity>
+        <View style={styles.handleContainer}>
+          <View style={styles.handle} />
+        </View>
+        {onPlayVideo && (
+          <TouchableOpacity
+            style={styles.optionItem}
+            onPress={() => onPlayVideo?.(video)}>
+            <Text style={styles.optionText}>Play Video</Text>
+          </TouchableOpacity>
+        )}
         <TouchableOpacity
           style={styles.optionItem}
           onPress={() => setRenameModalVisible(true)}>
@@ -104,7 +112,7 @@ const VideoOptionsModal: React.FC<VideoOptionsModalProps> = ({
       <RenameModal
         visible={renameModalVisible}
         onClose={() => setRenameModalVisible(false)}
-        onRename={() => {}}
+        onRename={newName => onRename(video, newName)}
         initialName={video.title}
       />
     </Modal>
@@ -125,7 +133,8 @@ const styles = StyleSheet.create({
   sheet: {
     backgroundColor: colors.Bg2,
     paddingHorizontal: 16,
-    paddingVertical: 32,
+    paddingBottom: 32,
+    paddingTop: 8,
     position: 'absolute',
     left: 0,
     right: 0,
@@ -154,6 +163,16 @@ const styles = StyleSheet.create({
   },
   deleteOption: {
     marginTop: 10,
+  },
+  handleContainer: {
+    alignItems: 'center',
+    paddingVertical: 10,
+  },
+  handle: {
+    width: 40,
+    height: 4,
+    backgroundColor: '#FFD700',
+    borderRadius: 2,
   },
 });
 

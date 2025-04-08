@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import useSWR, {SWRResponse} from 'swr';
-import {VideoItem} from './navigator/type';
+import {DownloadItem, VideoItem} from './navigator/type';
 
 const fetcher = async (key: string) => {
   try {
@@ -59,4 +59,11 @@ export function useLocalStorageSWR<Data = any, Error = any>(
 
 export function useVideoItemList() {
   return useLocalStorageSWR<VideoItem[] | null>('VideoItemList', null);
+}
+
+export function useRecentlyPlayedList() {
+  return useLocalStorageSWR<VideoItem[] | null>('RecentlyPlayedList', null);
+}
+export function useDownloadList() {
+  return useLocalStorageSWR<DownloadItem[] | null>('DownloadList', []);
 }

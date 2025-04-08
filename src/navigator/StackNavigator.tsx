@@ -6,8 +6,9 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import React from 'react';
 import {RootStackParamsList, Screens} from './type';
-import PlayVideoScreen from '#/pages/PlayVideoScreen';
 import Footer from '#/components/Footer';
+import {UploadVideoScreen} from '#/pages/UploadVideoScreen';
+import {PlayVideoScreen} from '#/pages/PlayVideoScreen';
 
 const Stack = createNativeStackNavigator<RootStackParamsList>();
 const Tab = createBottomTabNavigator<RootStackParamsList>();
@@ -32,6 +33,10 @@ const StackNavigator = () => {
       <Stack.Screen
         name={Screens.PlayVideoScreen}
         component={PlayVideoScreen}
+      />
+      <Stack.Screen
+        name={Screens.UploadVideoScreen}
+        component={UploadVideoScreen}
       />
     </Stack.Navigator>
   );

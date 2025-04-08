@@ -2,6 +2,13 @@ PODS:
   - boost (1.84.0)
   - DoubleConversion (1.1.6)
   - FBLazyVector (0.76.7)
+  - ffmpeg-kit-ios-https (6.0)
+  - ffmpeg-kit-react-native (6.0.2):
+    - ffmpeg-kit-react-native/https (= 6.0.2)
+    - React-Core
+  - ffmpeg-kit-react-native/https (6.0.2):
+    - ffmpeg-kit-ios-https (= 6.0)
+    - React-Core
   - fmt (9.1.0)
   - glog (0.3.5)
   - PromisesObjC (2.4.0)
@@ -1243,9 +1250,51 @@ PODS:
     - React-Core
   - react-native-safe-area-context (5.3.0):
     - React-Core
+  - react-native-slider (4.5.6):
+    - DoubleConversion
+    - glog
+    - RCT-Folly (= 2024.01.01.00)
+    - RCTRequired
+    - RCTTypeSafety
+    - React-Core
+    - React-debug
+    - React-Fabric
+    - React-featureflags
+    - React-graphics
+    - React-ImageManager
+    - React-jsi
+    - React-NativeModulesApple
+    - React-RCTFabric
+    - React-rendererdebug
+    - React-utils
+    - ReactCodegen
+    - ReactCommon/turbomodule/bridging
+    - ReactCommon/turbomodule/core
+    - Yoga
   - react-native-video (6.0.0-beta.5):
     - React-Core
     - react-native-video/Video (= 6.0.0-beta.5)
+  - react-native-video-duration (0.1.2):
+    - DoubleConversion
+    - glog
+    - RCT-Folly (= 2024.01.01.00)
+    - RCTRequired
+    - RCTTypeSafety
+    - React-Core
+    - React-debug
+    - React-Fabric
+    - React-featureflags
+    - React-graphics
+    - React-ImageManager
+    - React-jsi
+    - React-NativeModulesApple
+    - React-RCTFabric
+    - React-rendererdebug
+    - React-utils
+    - ReactCodegen
+    - ReactCommon/turbomodule/bridging
+    - ReactCommon/turbomodule/core
+    - Yoga
   - react-native-video/Video (6.0.0-beta.5):
     - PromisesSwift
     - React-Core
@@ -1501,6 +1550,8 @@ PODS:
     - React-utils (= 0.76.7)
   - RNCAsyncStorage (2.1.2):
     - React-Core
+  - RNFS (2.20.0):
+    - React-Core
   - RNGestureHandler (2.25.0):
     - DoubleConversion
     - glog
@@ -1681,6 +1732,7 @@ DEPENDENCIES:
   - boost (from `../node_modules/react-native/third-party-podspecs/boost.podspec`)
   - DoubleConversion (from `../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec`)
   - FBLazyVector (from `../node_modules/react-native/Libraries/FBLazyVector`)
+  - ffmpeg-kit-react-native (from `../node_modules/ffmpeg-kit-react-native`)
   - fmt (from `../node_modules/react-native/third-party-podspecs/fmt.podspec`)
   - glog (from `../node_modules/react-native/third-party-podspecs/glog.podspec`)
   - RCT-Folly (from `../node_modules/react-native/third-party-podspecs/RCT-Folly.podspec`)
@@ -1718,7 +1770,9 @@ DEPENDENCIES:
   - react-native-image-picker (from `../node_modules/react-native-image-picker`)
   - react-native-in-app-review (from `../node_modules/react-native-in-app-review`)
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
+  - "react-native-slider (from `../node_modules/@react-native-community/slider`)"
   - react-native-video (from `../node_modules/react-native-video`)
+  - react-native-video-duration (from `../node_modules/react-native-video-duration`)
   - React-nativeconfig (from `../node_modules/react-native/ReactCommon`)
   - React-NativeModulesApple (from `../node_modules/react-native/ReactCommon/react/nativemodule/core/platform/ios`)
   - React-perflogger (from `../node_modules/react-native/ReactCommon/reactperflogger`)
@@ -1746,6 +1800,7 @@ DEPENDENCIES:
   - ReactCodegen (from `build/generated/ios`)
   - ReactCommon/turbomodule/core (from `../node_modules/react-native/ReactCommon`)
   - "RNCAsyncStorage (from `../node_modules/@react-native-async-storage/async-storage`)"
+  - RNFS (from `../node_modules/react-native-fs`)
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
   - RNReanimated (from `../node_modules/react-native-reanimated`)
   - RNScreens (from `../node_modules/react-native-screens`)
@@ -1754,6 +1809,7 @@ DEPENDENCIES:
 
 SPEC REPOS:
   trunk:
+    - ffmpeg-kit-ios-https
     - PromisesObjC
     - PromisesSwift
     - SocketRocket
@@ -1765,6 +1821,8 @@ EXTERNAL SOURCES:
     :podspec: "../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec"
   FBLazyVector:
     :path: "../node_modules/react-native/Libraries/FBLazyVector"
+  ffmpeg-kit-react-native:
+    :path: "../node_modules/ffmpeg-kit-react-native"
   fmt:
     :podspec: "../node_modules/react-native/third-party-podspecs/fmt.podspec"
   glog:
@@ -1835,8 +1893,12 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-in-app-review"
   react-native-safe-area-context:
     :path: "../node_modules/react-native-safe-area-context"
+  react-native-slider:
+    :path: "../node_modules/@react-native-community/slider"
   react-native-video:
     :path: "../node_modules/react-native-video"
+  react-native-video-duration:
+    :path: "../node_modules/react-native-video-duration"
   React-nativeconfig:
     :path: "../node_modules/react-native/ReactCommon"
   React-NativeModulesApple:
@@ -1891,6 +1953,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon"
   RNCAsyncStorage:
     :path: "../node_modules/@react-native-async-storage/async-storage"
+  RNFS:
+    :path: "../node_modules/react-native-fs"
   RNGestureHandler:
     :path: "../node_modules/react-native-gesture-handler"
   RNReanimated:
@@ -1906,6 +1970,8 @@ SPEC CHECKSUMS:
   boost: 1dca942403ed9342f98334bf4c3621f011aa7946
   DoubleConversion: f16ae600a246532c4020132d54af21d0ddb2a385
   FBLazyVector: ca8044c9df513671c85167838b4188791b6f37e1
+  ffmpeg-kit-ios-https: f9c838aa5400a6c5ba12324c6b798f52197ba354
+  ffmpeg-kit-react-native: 3cea88c9c5cfad62e1465279ea7d800dfbba3b00
   fmt: 10c6e61f4be25dc963c36bd73fc7b1705fe975be
   glog: 08b301085f15bcbb6ff8632a8ebaf239aae04e6a
   PromisesObjC: f5707f49cb48b9636751c5b2e7d227e43fba9f47
@@ -1943,7 +2009,9 @@ SPEC CHECKSUMS:
   react-native-image-picker: 5ff22c75390f8e75c88745553b56ad6e4498fe71
   react-native-in-app-review: cf4a29c5a1d6bb28dd0d15f1fb1faa25e265bfb5
   react-native-safe-area-context: f6fd1adb0c0dfb0a528f561c7c6f9297f3391af3
+  react-native-slider: 61b38e85faecb7bc1914c5c6b9f0bc4e865ef271
   react-native-video: df7d8a4c8568ed4a31b28e6cd2bfa4a98b186e36
+  react-native-video-duration: 04b3399d645ebaffe22713f5066b699d9871a9e8
   React-nativeconfig: 67fa7a63ea288cb5b1d0dd2deaf240405fec164f
   React-NativeModulesApple: 76309eb26f75ca2fd24258dce699d48bcae023f3
   React-perflogger: f02ee21d98773121d77993b3c1a8be445840fae3
@@ -1971,6 +2039,7 @@ SPEC CHECKSUMS:
   ReactCodegen: 2abd5f903c7ab2aa55e6d6177a13658966f117f6
   ReactCommon: 676d55d3b141011103119b59a1577805a54e1d2a
   RNCAsyncStorage: addfc2cb6511dbe199c56c6b26ede383b6c38919
+  RNFS: 4ac0f0ea233904cb798630b3c077808c06931688
   RNGestureHandler: aa8556b4da5e8b7a1c7f51c2901e8624398adecf
   RNReanimated: c122cbf9c06debc7c5cd4360feca3bbe9441a210
   RNScreens: 12694eee83f2242b135618d317641258694f2f1e
