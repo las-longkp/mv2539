@@ -87,13 +87,27 @@ export const PlayVideoScreen: React.FC<PlayVideoScreenProps> = ({
   };
 
   const handlePrevious = () => {
-    console.log('Play previous video');
+    if (videoFind) {
+      const index = data?.findIndex(item => item.id === videoFind.id) ?? 0;
+      if (index <= 0) {
+        setVideoFind((data || [])[(data || []).length - 1]);
+      } else {
+        setVideoFind((data || [])[index - 1]);
+      }
+    }
     videoRef.current?.seek(0);
     setCurrentTime(0);
   };
 
   const handleNext = () => {
-    console.log('Play next video');
+    if (videoFind) {
+      const index = data?.findIndex(item => item.id === videoFind.id) ?? -1;
+      if (index < (data || []).length - 1) {
+        setVideoFind((data || [])[index + 1]);
+      } else {
+        setVideoFind((data || [])[0]);
+      }
+    }
   };
 
   const handleSliderValueChange = (value: number) => {

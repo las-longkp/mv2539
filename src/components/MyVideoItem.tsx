@@ -5,11 +5,12 @@ import {
   Text,
   StyleSheet,
   Dimensions,
+  useWindowDimensions,
 } from 'react-native';
 import {IconButton} from 'react-native-paper';
 import VideoPlayer from '#/components/VideoPlayer';
 import {VideoItem} from '#/navigator/type';
-import {formatDate, formatTime} from '#/utils/time';
+import {formatDate, formatFileSize, formatTime} from '#/utils/time';
 import {shortenTitle} from '#/utils/paragraph';
 
 interface MyVideoItemProps {
@@ -25,6 +26,8 @@ const MyVideoItem: React.FC<MyVideoItemProps> = ({
   onPlayVideo,
   onOptionsPress,
 }) => {
+  const {width} = useWindowDimensions();
+  const isTablet = width > 768;
   return (
     <View
       style={[
@@ -46,14 +49,14 @@ const MyVideoItem: React.FC<MyVideoItemProps> = ({
         </View>
       </TouchableOpacity>
 
-      <View style={styles.infoContainer}>
+      <View>
         <View style={styles.titleContainer}>
           <View style={{gap: 3}}>
             <Text style={styles.videoTitle}>
-              {shortenTitle(video.title, 20)}
+              {shortenTitle(video.title, isTablet ? 40 : 20)}
             </Text>
             <Text style={styles.videoMetadata}>
-              {formatDate(new Date(video.date))} - {video.size}
+              {formatDate(new Date(video.date))} - {formatFileSize(video.size)}
             </Text>
           </View>
           <TouchableOpacity
@@ -97,7 +100,6 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     fontSize: 12,
   },
-  infoContainer: {},
   titleContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',

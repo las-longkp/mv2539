@@ -2,9 +2,9 @@ import RenameModal from '#/components/RenameModal';
 import VideoPlayer from '#/components/VideoPlayer';
 import {VideoItem} from '#/navigator/type';
 import {colors} from '#/themes/colors';
-import {useVideoItemList} from '#/useLocalStorageSWR';
+import {useRecentlyPlayedList, useVideoItemList} from '#/useLocalStorageSWR';
 import {shortenTitle} from '#/utils/paragraph';
-import {formatDate, formatTime} from '#/utils/time';
+import {formatDate, formatFileSize, formatTime} from '#/utils/time';
 import {
   handleDeleteVideo,
   handleRename,
@@ -20,6 +20,8 @@ import {
   Image,
   TouchableOpacity,
   StatusBar,
+  useWindowDimensions,
+  Share,
 } from 'react-native';
 import {IconButton} from 'react-native-paper';
 import {EmptyData} from '../EmptyData';
@@ -32,16 +34,31 @@ const FavoritesScreen: React.FC<FavoritesScreenProps> = ({navigation}) => {
   const {data, saveData} = useVideoItemList();
   const favoriteVideos = (data || []).filter(item => item.isFavorite);
   const [renameModalVisible, setRenameModalVisible] = useState(false);
-  const handleShareVideo = (video: VideoItem) => {
-    console.log(`Share video: ${video.title}`);
+  const handleShareVideo = async (video: VideoItem) => {
+    if (video) {
+      try {
+        await Share.share({
+          title: video.uri,
+          message: `Check out this video: ${video.title}`,
+        });
+      } catch (error) {
+        console.error('Error sharing video:', error);
+      }
+    }
   };
-
+  const {data: recentlyPlayedList, saveData: saveRecentlyPlayedList} =
+    useRecentlyPlayedList();
+  const {width} = useWindowDimensions();
+  const isTablet = width > 768;
   const renderVideoItem = (video: VideoItem) => (
     <View key={video.id} style={styles.videoItem}>
       <TouchableOpacity style={styles.thumbnailContainer}>
         <VideoPlayer
           videoPath={video.uri}
-          backgroundVideo={styles.backgroundVideo}
+          backgroundVideo={[
+            styles.backgroundVideo,
+            {width: isTablet ? 300 : 130},
+          ]}
           paused={true}
         />
         <View style={styles.durationContainer}>
@@ -51,11 +68,13 @@ const FavoritesScreen: React.FC<FavoritesScreenProps> = ({navigation}) => {
 
       <View style={styles.videoInfo}>
         <View style={styles.videoDetails}>
-          <Text style={styles.videoTitle}>{shortenTitle(video.title, 20)}</Text>
+          <Text style={styles.videoTitle}>
+            {shortenTitle(video.title, isTablet ? 40 : 20)}
+          </Text>
           <Text style={styles.videoMetadata}>
             {formatDate(new Date(video.date))}
           </Text>
-          <Text style={styles.videoMetadata}>{video.size}</Text>
+          <Text style={styles.videoMetadata}>{formatFileSize(video.size)}</Text>
           <View style={styles.actionButtons}>
             <IconButton
               icon="pencil-outline"
@@ -80,7 +99,14 @@ const FavoritesScreen: React.FC<FavoritesScreenProps> = ({navigation}) => {
               iconColor="#FFFFFF"
               size={24}
               onPress={() =>
-                handleDeleteVideo(video, data || [], saveData, () => {})
+                handleDeleteVideo(
+                  video,
+                  data || [],
+                  saveData,
+                  recentlyPlayedList || [],
+                  saveRecentlyPlayedList,
+                  () => {},
+                )
               }
             />
           </View>
@@ -111,7 +137,7 @@ const FavoritesScreen: React.FC<FavoritesScreenProps> = ({navigation}) => {
         {favoriteVideos.length > 0 ? (
           favoriteVideos.map(renderVideoItem)
         ) : (
-          <EmptyData text="Haven't uploaded anything? Click the “+” sign to upload or play a video" />
+          <EmptyData text="No data here" />
         )}
         <View style={styles.bottomPadding} />
       </ScrollView>
@@ -131,6 +157,7 @@ const styles = StyleSheet.create({
     fontSize: 28,
     fontWeight: 'bold',
     color: colors.Accent,
+    textAlign: 'center',
   },
   scrollContent: {
     paddingHorizontal: 16,
@@ -164,7 +191,6 @@ const styles = StyleSheet.create({
     marginHorizontal: 5,
     borderRadius: 10,
     overflow: 'hidden',
-    width: 130,
   },
   durationText: {
     color: '#FFFFFF',

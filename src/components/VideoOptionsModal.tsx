@@ -54,7 +54,7 @@ const VideoOptionsModal: React.FC<VideoOptionsModalProps> = ({
     if (video) {
       try {
         await Share.share({
-          title: video.title,
+          title: video.uri,
           message: `Check out this video: ${video.title}`,
         });
       } catch (error) {
@@ -118,8 +118,6 @@ const VideoOptionsModal: React.FC<VideoOptionsModalProps> = ({
     </Modal>
   );
 };
-
-const {width} = Dimensions.get('window');
 
 const styles = StyleSheet.create({
   overlay: {

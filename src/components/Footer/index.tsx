@@ -1,15 +1,12 @@
 import {Screens} from '#/navigator/type';
 import {colors} from '#/themes/colors';
-import {useVideoItemList} from '#/useLocalStorageSWR';
 import {BottomTabBarProps} from '@react-navigation/bottom-tabs';
 import React, {useState} from 'react';
-import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {StyleSheet, TouchableOpacity, View} from 'react-native';
 import {launchImageLibrary} from 'react-native-image-picker';
 import {Icon} from 'react-native-paper';
-import uuid from 'react-native-uuid';
 const Footer: React.FC<BottomTabBarProps> = ({navigation, state}) => {
   const [selected, setSelected] = useState(Screens.HomeScreen);
-  const {data, saveData} = useVideoItemList();
   const navigateScreen = (name: string) => {
     navigation.navigate(name);
   };
@@ -25,17 +22,6 @@ const Footer: React.FC<BottomTabBarProps> = ({navigation, state}) => {
     });
     if (result.assets?.[0]) {
       navigation.navigate(Screens.UploadVideoScreen, {video: result.assets[0]});
-      // const day = new Date();
-      // const videoData = result.assets?.[0];
-      // const newData = {
-      //   id: uuid.v4().toString(),
-      //   title: videoData.fileName || '',
-      //   uri: videoData.uri || '',
-      //   duration: videoData.duration || 0,
-      //   date: day.toISOString() || '',
-      //   size: videoData.fileSize || 0,
-      // };
-      // saveData([...(data || []), newData]);
     }
   };
   const Button = ({name, icon}: {name: string; icon: string}) => (

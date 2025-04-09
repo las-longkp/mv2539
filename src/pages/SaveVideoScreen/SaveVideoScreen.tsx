@@ -1,113 +1,52 @@
+import MyVideoItem from '#/components/MyVideoItem';
+import VideoOptionsModal from '#/components/VideoOptionsModal';
+import {Screens, VideoItem} from '#/navigator/type';
 import {colors} from '#/themes/colors';
+import {useRecentlyPlayedList, useVideoItemList} from '#/useLocalStorageSWR';
+import {
+  addRecentlyPlayedList,
+  handleDeleteVideo,
+  handleRename,
+  handleToggleFavorite,
+} from '#/utils/video';
 import React, {useState} from 'react';
 import {
-  View,
-  Text,
-  StyleSheet,
+  Dimensions,
   SafeAreaView,
   ScrollView,
-  Image,
-  TouchableOpacity,
   StatusBar,
-  Dimensions,
+  StyleSheet,
+  Text,
+  View,
 } from 'react-native';
-import {IconButton} from 'react-native-paper';
-
-interface VideoItem {
-  id: string;
-  title: string;
-  thumbnail: string;
-  date: string;
-  size: string;
-  totalSize: string;
-}
+import {EmptyData} from '../EmptyData';
 
 interface SaveVideoScreenProps {
   navigation?: any;
 }
 
 const SaveVideoScreen: React.FC<SaveVideoScreenProps> = ({navigation}) => {
-  const savedVideos: VideoItem[] = [
-    {
-      id: '1',
-      title: 'Dog Training Guide',
-      thumbnail:
-        'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Save%20video%20%2B%20Playermini-ZdSMiu4xhnhrdcWJLEyS5wzIzRr2BT.png', // Replace with actual thumbnail URL
-      date: '26/03/2025',
-      size: '999MB',
-      totalSize: '1.1GB',
-    },
-    {
-      id: '2',
-      title: 'Best Partner Season 3: Episode 5',
-      thumbnail:
-        'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Save%20video%20%2B%20Playermini-ZdSMiu4xhnhrdcWJLEyS5wzIzRr2BT.png', // Replace with actual thumbnail URL
-      date: '26/03/2025',
-      size: '456MB',
-      totalSize: '890MB',
-    },
-  ];
+  const {data, saveData} = useVideoItemList();
 
-  const [currentlyPlaying, setCurrentlyPlaying] = useState<VideoItem | null>(
-    savedVideos[1],
-  );
-  const [showMiniPlayer, setShowMiniPlayer] = useState<boolean>(true);
+  const {data: recentlyPlayedList, saveData: saveRecentlyPlayedList} =
+    useRecentlyPlayedList();
 
-  const handleDeleteVideo = (video: VideoItem) => {
-    console.log(`Delete video: ${video.title}`);
-  };
+  const [modalVisible, setModalVisible] = useState<boolean>(false);
+  const [selectedVideo, setSelectedVideo] = useState<VideoItem | null>(null);
 
   const handlePlayVideo = (video: VideoItem) => {
-    setCurrentlyPlaying(video);
-    setShowMiniPlayer(true);
-    console.log(`Play video: ${video.title}`);
+    addRecentlyPlayedList(
+      video,
+      recentlyPlayedList || [],
+      saveRecentlyPlayedList,
+    );
+    navigation.navigate(Screens.PlayVideoScreen, {id: video.id});
   };
 
-  const handleExpandMiniPlayer = () => {
-    console.log('Expand to full screen player');
+  const handleVideoOptions = (video: VideoItem) => {
+    setSelectedVideo(video);
+    setModalVisible(true);
   };
-
-  const handleCloseMiniPlayer = () => {
-    setShowMiniPlayer(false);
-  };
-
-  const renderVideoItem = (video: VideoItem) => (
-    <View key={video.id} style={styles.videoItem}>
-      <TouchableOpacity
-        style={styles.videoContent}
-        onPress={() => handlePlayVideo(video)}>
-        <Image
-          source={{uri: video.thumbnail}}
-          style={styles.thumbnail}
-          resizeMode="cover"
-        />
-
-        <View style={styles.videoInfo}>
-          <Text style={styles.videoTitle}>{video.title}</Text>
-          <Text style={styles.videoDate}>{video.date}</Text>
-          <View style={styles.sizeContainer}>
-            <IconButton
-              icon="circle"
-              iconColor="#FFFFFF"
-              size={16}
-              style={styles.circleIcon}
-            />
-            <Text style={styles.videoSize}>
-              {video.size}/{video.totalSize}
-            </Text>
-          </View>
-        </View>
-      </TouchableOpacity>
-
-      <IconButton
-        icon="delete"
-        iconColor="#FFFFFF"
-        size={24}
-        onPress={() => handleDeleteVideo(video)}
-      />
-    </View>
-  );
-
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="light-content" />
@@ -119,9 +58,47 @@ const SaveVideoScreen: React.FC<SaveVideoScreenProps> = ({navigation}) => {
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scrollContent}>
-        {savedVideos.map(renderVideoItem)}
+        {(data || [])?.length > 0 ? (
+          <View style={styles.myVideosGrid}>
+            {(data || []).map((video, index) => (
+              <MyVideoItem
+                key={video.id}
+                video={video}
+                index={index}
+                onPlayVideo={handlePlayVideo}
+                onOptionsPress={handleVideoOptions}
+              />
+            ))}
+          </View>
+        ) : (
+          <EmptyData text="No data here" />
+        )}
         <View style={styles.bottomPadding} />
       </ScrollView>
+      <VideoOptionsModal
+        visible={modalVisible}
+        onClose={() => setModalVisible(false)}
+        video={selectedVideo}
+        onPlayVideo={handlePlayVideo}
+        onToggleFavorite={video => {
+          setModalVisible(false);
+          handleToggleFavorite(video, data || [], saveData);
+        }}
+        onDeleteVideo={video =>
+          handleDeleteVideo(
+            video,
+            data || [],
+            saveData,
+            recentlyPlayedList || [],
+            saveRecentlyPlayedList,
+            setModalVisible,
+          )
+        }
+        onRename={(video, name) => {
+          handleRename(video.id, name, data || [], saveData);
+          setModalVisible(false);
+        }}
+      />
     </SafeAreaView>
   );
 };
@@ -140,10 +117,15 @@ const styles = StyleSheet.create({
     fontSize: 28,
     fontWeight: 'bold',
     color: colors.Accent,
+    textAlign: 'center',
   },
-  scrollContent: {
+  myVideosGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    width: width,
     paddingHorizontal: 16,
   },
+  scrollContent: {},
   videoItem: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -169,14 +151,19 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     marginBottom: 4,
   },
-  videoDate: {
-    color: '#999999',
-    fontSize: 12,
-    marginBottom: 4,
-  },
+
   sizeContainer: {
     flexDirection: 'row',
     alignItems: 'center',
+  },
+  sectionHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  sectionTitle: {
+    fontSize: 24,
+    fontWeight: '600',
+    color: '#FFFFFF',
   },
   circleIcon: {
     margin: 0,
@@ -189,37 +176,6 @@ const styles = StyleSheet.create({
   },
   bottomPadding: {
     height: 100,
-  },
-  miniPlayerContainer: {
-    position: 'absolute',
-    bottom: 20,
-    left: 20,
-    right: 20,
-    height: 80,
-    backgroundColor: '#1E1E1E',
-    borderRadius: 10,
-    overflow: 'hidden',
-  },
-  miniPlayerContent: {
-    width: '100%',
-    height: '100%',
-    position: 'relative',
-  },
-  miniPlayerThumbnail: {
-    width: '100%',
-    height: '100%',
-  },
-  expandButton: {
-    position: 'absolute',
-    left: 0,
-    bottom: 0,
-    margin: 0,
-  },
-  closeButton: {
-    position: 'absolute',
-    right: 0,
-    top: 0,
-    margin: 0,
   },
 });
 

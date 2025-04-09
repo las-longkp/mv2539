@@ -4,7 +4,7 @@ import {useDownloadList, useVideoItemList} from '#/useLocalStorageSWR';
 import Slider from '@react-native-community/slider';
 import {RouteProp} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
-import {FFmpegKit, FFmpegKitConfig} from 'ffmpeg-kit-react-native';
+import {FFmpegKit} from 'ffmpeg-kit-react-native';
 import uuid from 'react-native-uuid';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {
@@ -41,16 +41,30 @@ export const UploadVideoScreen: React.FC<UploadVideoScreenProps> = ({
   const [showControls, setShowControls] = useState<boolean>(true);
   const [durationVideo, setDurationVideo] = useState(0);
   const [durationCurrent, setDurationCurrent] = useState(0);
+
   type Resolution = '240p' | '360p' | '480p' | '720p' | '1080p' | '1440p';
+
   const resolutionMap: Record<Resolution, string> = {
-    '240p': '426:240',
-    '360p': '640:360',
-    '480p': '854:480',
-    '720p': '1280:720',
-    '1080p': '1920:1080',
-    '1440p': '2560:1440',
+    '240p': '400k',
+    '360p': '800k',
+    '480p': '1500k',
+    '720p': '3000k',
+    '1080p': '5000k',
+    '1440p': '10000k',
   };
-  const [processing, setProcessing] = useState<boolean>(false);
+
+  // Trạng thái xử lý riêng cho từng độ phân giải
+  const [processingStates, setProcessingStates] = useState<
+    Record<Resolution, boolean>
+  >({
+    '240p': false,
+    '360p': false,
+    '480p': false,
+    '720p': false,
+    '1080p': false,
+    '1440p': false,
+  });
+
   const handleDownload = async (resolution: Resolution) => {
     try {
       if (!video || !video.uri) {
@@ -58,43 +72,51 @@ export const UploadVideoScreen: React.FC<UploadVideoScreenProps> = ({
         return;
       }
 
-      setProcessing(true);
-      const outputFileName = `output_${resolution}_${Date.now()}.mp4`;
-      const outputFilePath = `${RNFS.DocumentDirectoryPath}/${outputFileName}`;
+      // Bật trạng thái xử lý cho độ phân giải được chọn
+      setProcessingStates(prev => ({...prev, [resolution]: true}));
 
-      await FFmpegKitConfig.init();
-      const scale = resolutionMap[resolution];
-      const command = `-i ${video.uri} -vf scale=1280:720 -c:v libx264 -preset fast -crf 23 -c:a aac ${outputFilePath}`;
-      console.log(command);
-      const session = await FFmpegKit.execute(command);
-      console.log('tai xuong thanh cong', outputFilePath);
-      // const newData = {
-      //   id: uuid.v4().toString(),
-      //   title: video.fileName || '',
-      //   resolution: resolution,
-      //   progress: 0,
-      //   status: 'done',
-      //   outputPath: video.uri,
-      //   size: video.fileSize,
-      //   createdAt: new Date().toISOString(),
-      // };
-      // saveData([...(data || []), newData]);
+      const outputFilePath = `${
+        RNFS.DocumentDirectoryPath
+      }/video_${uuid.v4()}_${resolution}.mp4`;
+      const bitrate = resolutionMap[resolution];
+
+      const inputUri = video.uri.startsWith('file://')
+        ? video.uri
+        : `file://${video.uri}`;
+      const ffmpegCommand = `-i "${inputUri}" -c:v h264_videotoolbox -b:v ${bitrate} -c:a aac -b:a 128k "${outputFilePath}"`;
+
+      const session = await FFmpegKit.execute(ffmpegCommand);
+      const returnCode = await session.getReturnCode();
+      const logs = await session.getAllLogsAsString();
+
+      if (!returnCode.isValueSuccess()) {
+        throw new Error(
+          `FFmpeg failed with return code ${returnCode}: ${logs}`,
+        );
+      }
+
+      const fileExists = await RNFS.exists(outputFilePath);
+      if (!fileExists) {
+        throw new Error('Failed to process video - Output file not found');
+      }
+
+      const fileStat = await RNFS.stat(outputFilePath);
       const newData = {
         id: uuid.v4().toString(),
-        title: video.fileName || '',
+        title: `${video.fileName || 'video'}_${resolution}`,
         uri: outputFilePath,
-        duration: video.duration || 0,
+        duration: durationVideo || 0,
         date: new Date().toISOString(),
-        size: video.fileSize || 0,
+        size: fileStat.size || 0,
         isFavorite: false,
       };
+
       saveDataVideoItem([...(dataVideoItem || []), newData]);
+      Alert.alert('Success', `Video processed and saved at ${resolution}`);
       navigation.goBack();
     } catch (error) {
-      console.error('Error during video processing:', error);
-      Alert.alert('Error', `An error occurred: ${error}`);
     } finally {
-      setProcessing(false);
+      setProcessingStates(prev => ({...prev, [resolution]: false}));
     }
   };
 
@@ -150,10 +172,6 @@ export const UploadVideoScreen: React.FC<UploadVideoScreenProps> = ({
     navigation?.goBack();
   };
 
-  const handleCopy = () => {
-    console.log('Copy video link');
-  };
-
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="light-content" />
@@ -181,13 +199,6 @@ export const UploadVideoScreen: React.FC<UploadVideoScreenProps> = ({
                 iconColor="#FFFFFF"
                 size={24}
                 onPress={handleBack}
-              />
-
-              <IconButton
-                icon="content-copy"
-                iconColor="#FFFFFF"
-                size={24}
-                onPress={handleCopy}
               />
             </View>
 
@@ -233,7 +244,11 @@ export const UploadVideoScreen: React.FC<UploadVideoScreenProps> = ({
                 <Text style={styles.resolutionLabel}>{res}</Text>
               </View>
               <IconButton
-                icon={processing ? 'progress-download' : 'download'}
+                icon={
+                  processingStates[res as Resolution]
+                    ? 'progress-download'
+                    : 'download'
+                }
                 iconColor="#FFFFFF"
                 size={24}
                 onPress={() => handleDownload(res as Resolution)}

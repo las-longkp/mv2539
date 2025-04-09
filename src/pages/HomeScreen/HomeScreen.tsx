@@ -20,6 +20,7 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
+  useWindowDimensions,
   View,
 } from 'react-native';
 import {IconButton} from 'react-native-paper';
@@ -40,7 +41,8 @@ const VideoGalleryScreen: React.FC<VideoGalleryScreenProps> = ({
   const [selectedVideo, setSelectedVideo] = useState<VideoItem | null>(null);
 
   const {data, saveData} = useVideoItemList();
-
+  const {width} = useWindowDimensions();
+  const isTablet = width > 768;
   const handlePlayVideo = (video: VideoItem) => {
     addRecentlyPlayedList(
       video,
@@ -58,7 +60,7 @@ const VideoGalleryScreen: React.FC<VideoGalleryScreenProps> = ({
   const renderRecentlyPlayedItem = (video: VideoItem) => (
     <TouchableOpacity
       key={video.id}
-      style={styles.recentlyPlayedItem}
+      style={[styles.recentlyPlayedItem, {width: isTablet ? 300 : 150}]}
       onPress={() => handlePlayVideo(video)}>
       <View style={styles.thumbnailContainer}>
         <VideoPlayer
@@ -73,7 +75,9 @@ const VideoGalleryScreen: React.FC<VideoGalleryScreenProps> = ({
           <Text style={styles.durationText}> {formatTime(video.duration)}</Text>
         </View>
       </View>
-      <Text style={styles.videoTitle}> {shortenTitle(video.title, 15)}</Text>
+      <Text style={styles.videoTitle}>
+        {shortenTitle(video.title, isTablet ? 30 : 15)}
+      </Text>
     </TouchableOpacity>
   );
 
@@ -196,7 +200,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
   },
   recentlyPlayedItem: {
-    width: 150,
     marginHorizontal: 5,
   },
   thumbnailContainer: {
